@@ -1,0 +1,9 @@
+# Core framework
+flask>=1.1.2
+
+# Util packages
+Flask-SQLAlchemy==2.4.1
+Flask-Migrate==2.5.3
+flask_marshmallow==0.12.0
+Flask-HTTPAuth==4.0.0
+psycopg2==2.8.5
