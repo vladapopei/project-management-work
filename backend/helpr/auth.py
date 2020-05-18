@@ -2,4 +2,4 @@
 This is where all authentication related routes belong.
 """
 
-from app import app, db
+from helpr import app, db
