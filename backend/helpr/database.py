@@ -5,18 +5,27 @@ from helpr import db
 
 posting_categories = db.Table('posting_categories',
                               db.Column('posting_id', db.Integer, db.ForeignKey('posting.id'), primary_key=True),
-                              db.Column('categori_id', db.Integer, db.ForeignKey('category.id'), primary_key=True)
+                              db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary_key=True)
                               )
 
 
 class Posting(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.column(db.String(200))
-    pricing = db.column(db.Float)
-    date_posted = db.column(db.DateTime)
+    title = db.Column(db.String(200))
+    pricing = db.Column(db.Float)
+    date_posted = db.Column(db.DateTime)
     body = db.Column(db.String(2500))
-    categories = db.relationship('Category', secondary=posting_categories, lazy='subquery',
-                                 backref=db.backref('postings', lazy=True))
+    business = db.Column(db.Integer, db.ForeignKey('business.id'), nullable=True)
+    tags = db.relationship('Category', secondary=posting_categories, lazy='subquery',
+                           backref=db.backref('posting', lazy=True))
+
+
+class Business(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200))
+    contact_email = db.Column(db.String(250))
+    contact_number = db.Column(db.String(30))
+    postings = db.relationship('Posting', backref='poster', lazy=True)
 
 
 class Category(db.Model):
@@ -25,24 +34,17 @@ class Category(db.Model):
     description = db.Column(db.String(500))
 
 
-class Business(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200))
-    contact_email = db.Column(db.String(250))
-    contact_number = db.column(db.String(30))
-    postings = db.relationship('Posting', backref='business', lazy=True)
-
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    accepted = db.Column(db.Boolean, default=False)
+    completed = db.Column(db.Boolean, default=False)
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     phone_number = db.Column(db.String(30))
-    service_requests = db.relationship('RequestForService', backref='request', lazy=True)
+    service_requests = db.relationship('ServiceRequests', backref='requester', lazy=True)
 
 
-class RequestForService(db.Model):
+class ServiceRequests(db.Model):
     request_id = db.Column(db.Integer, primary_key=True)
-    user = db.relationship('User', backref='service_request', lazy=True)
-    posting = db.relationship('Posting', backref='posting', lazy=True)
+    user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     details = db.Column(db.String(1000))
