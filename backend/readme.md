@@ -16,3 +16,7 @@
 # Tests are currently not really setup
 * Our project is relatively similar to this from the Flask docs though, should be easy enough to addapt. 
     * https://flask.palletsprojects.com/en/1.1.x/tutorial/tests/
+
+# Authentication
+* The authentication is based around Miguel Grinberg's REST-Auth example, using the up to date code from his example:
+    * https://github.com/miguelgrinberg/REST-auth/blob/2904b70ea95885bc523e472e58e934925f1ab1eb/api.py
