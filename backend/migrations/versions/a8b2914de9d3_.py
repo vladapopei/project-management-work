@@ -1,8 +1,8 @@
-"""Initial migration.
+"""empty message
 
-Revision ID: 9542980a62c5
+Revision ID: a8b2914de9d3
 Revises: 
-Create Date: 2020-05-23 01:35:43.284886
+Create Date: 2020-05-23 15:57:28.047418
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9542980a62c5'
+revision = 'a8b2914de9d3'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,13 +33,16 @@ def upgrade():
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('username', sa.String(), nullable=True),
     sa.Column('accepted', sa.Boolean(), nullable=True),
+    sa.Column('password_hash', sa.String(length=120), nullable=True),
     sa.Column('completed', sa.Boolean(), nullable=True),
     sa.Column('first_name', sa.String(length=100), nullable=True),
     sa.Column('last_name', sa.String(length=100), nullable=True),
     sa.Column('phone_number', sa.String(length=30), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=False)
     op.create_table('posting',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=200), nullable=True),
@@ -72,6 +75,7 @@ def downgrade():
     op.drop_table('posting_categories')
     op.drop_table('service_requests')
     op.drop_table('posting')
+    op.drop_index(op.f('ix_user_username'), table_name='user')
     op.drop_table('user')
     op.drop_table('category')
     op.drop_table('business')

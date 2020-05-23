@@ -28,11 +28,6 @@ class Posting(db.Model):
                            backref=db.backref('posting', lazy=True))
 
 
-class PostingSchema(ma.SQLAlchemySchema):
-    class Meta:
-        model = Posting
-
-
 class Business(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
@@ -41,37 +36,17 @@ class Business(db.Model):
     postings = db.relationship('Posting', backref='poster', lazy=True)
 
 
-class BusinessScehma(ma.SQLAlchemySchema):
-    class Meta:
-        model = Business
-
-
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     description = db.Column(db.String(500))
 
 
-class CategorySchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Category
-
-
-class ServiceRequests(db.Model):
-    request_id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.Integer, db.ForeignKey('user.username'), nullable=False)
-    details = db.Column(db.String(1000))
-
-
-class ServiceRequestSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = ServiceRequests
-
-
 class User(db.Model):
-    username = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String, index=True)
     accepted = db.Column(db.Boolean, default=False)
-    password_hash = db.Column(db.String(64))
+    password_hash = db.Column(db.String(120))
     completed = db.Column(db.Boolean, default=False)
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
@@ -79,7 +54,7 @@ class User(db.Model):
     service_requests = db.relationship('ServiceRequests', backref='requester', lazy=True)
 
     def hash_password(self, password):
-        self.password_hash = pwd_context.encrypt(password)
+        self.password_hash = pwd_context.hash(password)
 
     def verify_password(self, password):
         return pwd_context.verify(password, self.password_hash)
@@ -101,6 +76,32 @@ class User(db.Model):
         return user
 
 
+class ServiceRequests(db.Model):
+    request_id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    details = db.Column(db.String(1000))
+
+
+class ServiceRequestSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = ServiceRequests
+
+
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
+
+
+class CategorySchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Category
+
+
+class PostingSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Posting
+
+
+class BusinessScehma(ma.SQLAlchemySchema):
+    class Meta:
+        model = Business
