@@ -7,5 +7,12 @@
 # Running Postgres via docker
 * Install docker desktop
 * from the utils/postgres_db directory, run `docker run --rm -P -p 5432:5432 --name helpr_docker_db eg_postgresql`
+* You probably want to run migrations. To do this:
+    * you need to make sure you have the FLASK_APP environment variable set
+     * from `backend/` run the command `flask db upgrade`
+     * This should apply the migrations stored in the migrations directory
 
 
+# Tests are currently not really setup
+* Our project is relatively similar to this from the Flask docs though, should be easy enough to addapt. 
+    * https://flask.palletsprojects.com/en/1.1.x/tutorial/tests/

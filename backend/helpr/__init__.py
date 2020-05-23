@@ -10,6 +10,6 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
-migrate = Migrate(app)
+migrate = Migrate(app, db)
 
 from helpr import helpr_postings, database
