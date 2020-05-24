@@ -15,4 +15,22 @@ migrate = Migrate(app, db)
 auth = HTTPBasicAuth()
 cfg = app.config
 
-from helpr import helpr_postings, database
+
+@app.route('/')
+def hello_world():
+    """
+    Simple health check route.
+    """
+    return 'It Lives!'
+
+
+@app.route('/login_check')
+@auth.login_required
+def hello_protected_world():
+    """
+    Simple route to validate whether a user is logged in.
+    """
+    return {'login': True}
+
+
+from helpr import helpr_postings, database, auth_handler
